@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart - Chikanda Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <script src="script.js"></script>
+
+<!-- NAV -->
+<nav class="navbar">
+    <div class="logo">Chikanda<span>Restaurant</span></div>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="login.html">Login</a></li>
+    </ul>
+</nav>
+
+<!-- CART SECTION -->
+<section class="container">
+    <h2 class="section-title">Your Cart</h2>
+
+    <div class="cart-layout">
+
+        <!-- CART ITEMS -->
+        <div id="cartItems"></div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="order-summary" id="summaryBox">
+            <h3>Order Summary</h3>
+
+            <div class="line">
+                <span>Subtotal</span>
+                <span id="subtotal">K0</span>
+            </div>
+
+            <div class="line">
+                <span>Delivery</span>
+                <span>K500</span>
+            </div>
+
+            <div class="line total">
+                <span>Total</span>
+                <span id="total">K0</span>
+            </div>
+
+            <button class="btn-primary" onclick="placeOrder()" style="width:100%; margin-top:20px;">
+                Place Order
+            </button>
+        </div>
+
+    </div>
+</section>
+
+<!-- SUCCESS MESSAGE -->
+<div id="messageBox" style="
+    display:none;
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#1a1a1a;
+    color:white;
+    padding:15px 25px;
+    border-radius:10px;
+">
+</div>
+
+<script>
+// LOAD CART FROM LOCAL STORAGE
+function loadCart() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartItemsDiv = document.getElementById("cartItems");
+
+    cartItemsDiv.innerHTML = "";
+
+    let subtotal = 0;
+
+    if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById("summaryBox").style.display = "none";
+        return;
+    }
+
+    cart.forEach(item => {
+        subtotal += item.price;
+
+        const card = document.createElement("div");
+        card.className = "cart-card";
+
+        card.innerHTML = `
+            <h3>${item.name}</h3>
+            <span>K${item.price}</span>
+        `;
+
+        cartItemsDiv.appendChild(card);
+    });
+
+    document.getElementById("subtotal").innerText = "K" + subtotal;
+    document.getElementById("total").innerText = "K" + (subtotal + 500);
+}
+
+// PLACE ORDER FUNCTION
+function placeOrder() {
+    const msg = document.getElementById("messageBox");
+
+    msg.style.display = "block";
+    msg.innerText = "🎉 Order placed successfully!";
+
+    // CLEAR CART
+    localStorage.removeItem("cart");
+
+    setTimeout(() => {
+        msg.style.display = "none";
+        loadCart();
+    }, 2000);
+}
+
+// LOAD CART ON PAGE LOAD
+loadCart();
+</script>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2026 Chikanda Restaurant | All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
